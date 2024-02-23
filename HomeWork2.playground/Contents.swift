@@ -128,7 +128,8 @@ var weatherInCities: [Weather] = []
 
 // запускаємо цикл для заповнення пустого масиву weatherInCities
 // інформацією про погоду для кожної назви міста, вказаних у масиві cityNames
-for index in 1 ..< 4 {
+for index in 0 ..< cityNames.count { // виправляю діапазон, щоб масив weatherInCities
+                                     // заповнився усіма даними з масиву cityNames
     let weatherInfo = Weather(
         city: cityNames[index], // записуємо назву міста
         temp: Double(arc4random() % 30) + kelvinZero, // генеруємо випадкове значення температури у Кельвінах
@@ -138,6 +139,8 @@ for index in 1 ..< 4 {
     weatherInCities.append(weatherInfo) // додаємо згенеровані погодні значення для поточної назви міста
 }
 
+weatherInCities // перевіряю як згенерувалися данні
+
 // Приклад використання генерації числа
 let cityIndex = Int(arc4random() % UInt32(weatherInCities.count - 1))
 
@@ -145,19 +148,30 @@ let cityIndex = Int(arc4random() % UInt32(weatherInCities.count - 1))
 
 // виводимо ПОВНУ інформацію для кожного міста, що є у масиві weatherInCities
 print("---------- ЕКРАН 1 ----------")
-for index in 2 ... 8 {
-    let _ = index
-    let weatherInfo = weatherInCities[0]
-    let city = weatherInfo.0
-    let kelvin = weatherInfo.1
-    let kelvinMin = weatherInfo.2
-    let kelvinMax = weatherInfo.3
+for index in 0 ..< weatherInCities.count { // виправляю діапазон, щоб цикл опрацював дані для кожного міста у масиві
+    //let _ = index // коментую, це нам не потрібно, index використовується у коді, Warnings не буде.
+    let weatherInfo = weatherInCities[index] // додаю index замість 0, щоб були опрацьовані усі міста у масиві
+    let city = weatherInfo.0 // зберігаємо назву міста
+    
+    let kelvin = weatherInfo.1 // залишаю константу зі значенням по Кельвіну,
+                               // на випадок, якщо треба буде з нею працювати в майбутньому.
+    
+    let celsius = kelvin - 273.15 // конвертую з Кельвіна у Цельсій
+    let fahrenheit = (kelvin * (9.0/5.0) - 459.67) // конвертую з Кельвіна у Фаренгейт
+    
+    let kelvinMin = weatherInfo.2 // зберігаємо мінімальнне значення температури у Кельвінах
+    let celsiusMin = kelvinMin - 273.15
+    let fahrenheitMin = (kelvinMin * (9.0/5.0) - 459.67)
+    
+    let kelvinMax = weatherInfo.3 // зберігаємо максимальне значення температури у Кельвінах
+    let celsiusMax = kelvinMax - 273.15
+    let fahrenheitMax = (kelvinMax * (9.0/5.0) - 459.67)
 
     print("\n\(city):")
-    print("t: \(kelvin) C")
-    print("t: \(kelvin) F")
-    print("min t: \(kelvinMin) C / \(kelvinMin) F")
-    print("max t: \(kelvinMax) C / \(kelvinMax) F")
+    print("t: \(String(format: "%.1f", celsius)) C") // обмежую вивід чисел після крапки
+    print("t: \(String(format: "%.2f", fahrenheit)) F")
+    print("min t: \(String(format: "%.1f", celsiusMin)) C / \(String(format: "%.2f", fahrenheitMin)) F")
+    print("max t: \(String(format: "%.1f", celsiusMax)) C / \(String(format: "%.2f", fahrenheitMax)) F")
 }
 print("\n-----------------------------")
 print("\n\n")
@@ -167,12 +181,13 @@ print("\n\n")
 // виводимо інформацію про температуру тільки у Цельсій
 // для кожного міста, що є у масиві weatherInCities
 print("---------- ЕКРАН 2 ----------")
-for index in 1 ..< 10 {
-    let _ = index
-    let weatherInfo = weatherInCities[2]
-    let city = weatherInfo.0
-    let kelvin = weatherInfo.1
-    print("\n\(city):\nt: \(String(format: "%.1f", kelvin)) C")
+for index in 0 ..< weatherInCities.count { // виправляю діапазон, щоб цикл опрацював дані для кожного міста у масиві
+    //let _ = index // коментую, це нам не потрібно, index використовується у коді, Warnings не буде.
+    let weatherInfo = weatherInCities[index] // додаю index замість 2, щоб були опрацьовані усі міста у масиві
+    let city = weatherInfo.0 // зберігаємо назву міста
+    let kelvin = weatherInfo.1 // зберігаємо значення температури у Кельвінах
+    let celsius = kelvin - 273.15 // конвертую з Кельвіна у Цельсій
+    print("\n\(city):\nt: \(String(format: "%.1f", celsius)) C")
 }
 print("\n-----------------------------")
 print("\n\n")
@@ -182,11 +197,23 @@ print("\n\n")
 // виводимо інформацію про температуру тільки у Фаренгейт
 // для кожного міста, що є у масиві weatherInCities
 print("---------- ЕКРАН 3 ----------")
-for index in 0 ... weatherInCities.count {
-    let _ = index
-    let weatherInfo = weatherInCities[cityIndex]
-    let city = weatherInfo.0
-    let kelvin = weatherInfo.1
-    print("\n\(city):\nt: \(String(format: "%.2f", kelvin)) F")
+for index in 0 ..< weatherInCities.count { // виправляю діапазон, додаючи знак <,
+                                           // бо цикл буде намагатися опрацювати більше значень ніж є у масиві.
+    //let _ = index // коментую, це нам не потрібно, index використовується у коді, Warnings не буде.
+    let weatherInfo = weatherInCities[index] // замінюю cityIndex на index для опрацьовання усіх міст у масиві,
+                                             // а не тільки одного, рандомно обраного
+    let city = weatherInfo.0 // зберігаємо назву міста
+    let kelvin = weatherInfo.1 // зберігаємо значення температури у Кельвінах
+    let fahrenheit = (kelvin * (9.0/5.0) - 459.67) // конвертую з Кельвіна у Фаренгейт
+    print("\n\(city):\nt: \(String(format: "%.2f", fahrenheit)) F")
+        /*
+         в завданні був приклад значенння на Екрані 3 з округленням до десятих,
+         "наприклад:
+                     Kyiv:
+                     t: 55.0 F"
+         але на першому екрані з округленням до сотих
+         і тут вказано %.2f,
+         тож залишаю для Фаренгейтів округлення до сотих.
+        */
 }
 print("\n-----------------------------")
